@@ -4,6 +4,7 @@ from database import create_database, load_contacts_to_list, update_contact_in_d
 from gui_functions import refresh_contacts, add_contact, delete_contact
 
 
+## TODO: Check if Bartek can push new changes
 def main():
     create_database()
     contact_list = load_contacts_to_list()
