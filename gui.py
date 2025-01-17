@@ -4,16 +4,15 @@ from database import create_database, load_contacts_to_list, update_contact_in_d
 from gui_functions import refresh_contacts, add_contact, delete_contact, undo_last_action
 
 
-## TODO: Check if Bartek can push new changes
 def main():
     create_database()
     contact_list = load_contacts_to_list()
 
-    def sort_contacts_by_column(column, contact_list):
+    def sort_contacts_by_column(column, contacts):
         # Sort contacts by the chosen column (first_name or last_name)
-        contact_list.sort(column)
+        contacts.sort(column)
         # contact_list.sort(column)
-        refresh_contacts(tree, contact_list)
+        refresh_contacts(tree, contacts)
 
     root = tk.Tk()
     root.title("Menadżer kontaktów")
