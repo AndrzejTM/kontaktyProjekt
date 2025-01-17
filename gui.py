@@ -21,13 +21,13 @@ def main():
     frame = tk.Frame(root)
     frame.pack(pady=10)
 
-    ## TODO: Add sorting function on pressing specific heading
+    ## Add sorting function on pressing specific heading
     tree = ttk.Treeview(frame, columns=("ID", "Imię", "Nazwisko", "Telefon", "Email"), show="headings")
-    tree.heading("ID", text="ID")
+    tree.heading("ID", text="ID", command=lambda: sort_contacts_by_column("contact_id", contact_list))
     tree.heading("Imię", text="Imię", command=lambda: sort_contacts_by_column("first_name", contact_list))  # Sort by first_name (x[1]))
     tree.heading("Nazwisko", text="Nazwisko", command=lambda: sort_contacts_by_column("last_name", contact_list))
-    tree.heading("Telefon", text="Telefon")
-    tree.heading("Email", text="Email")
+    tree.heading("Telefon", text="Telefon", command=lambda: sort_contacts_by_column("phone_number", contact_list))
+    tree.heading("Email", text="Email", command=lambda: sort_contacts_by_column("email", contact_list))
     tree.pack(side=tk.LEFT)
 
     scrollbar = ttk.Scrollbar(frame, orient=tk.VERTICAL, command=tree.yview)
