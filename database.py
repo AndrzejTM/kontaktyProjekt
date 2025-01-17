@@ -5,7 +5,8 @@ from structures import DoublyLinkedList
 def create_database():
     connection = sqlite3.connect("contacts.db")
     cursor = connection.cursor()
-    cursor.execute("""
+    cursor.execute(
+        """
         CREATE TABLE IF NOT EXISTS contacts (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             first_name TEXT NOT NULL,
@@ -13,7 +14,8 @@ def create_database():
             phone_number TEXT NOT NULL,
             email TEXT
         )
-    """)
+    """
+    )
     connection.commit()
     connection.close()
 
@@ -21,9 +23,11 @@ def create_database():
 def load_contacts_to_list():
     connection = sqlite3.connect("contacts.db")
     cursor = connection.cursor()
-    cursor.execute("""
+    cursor.execute(
+        """
         SELECT id, first_name, last_name, phone_number, email FROM contacts
-    """)
+    """
+    )
     contacts = cursor.fetchall()
     connection.close()
 
@@ -37,10 +41,13 @@ def load_contacts_to_list():
 def add_contact_to_db(first_name, last_name, phone_number, email):
     connection = sqlite3.connect("contacts.db")
     cursor = connection.cursor()
-    cursor.execute("""
+    cursor.execute(
+        """
         INSERT INTO contacts (first_name, last_name, phone_number, email)
         VALUES (?, ?, ?, ?)
-    """, (first_name, last_name, phone_number, email))
+    """,
+        (first_name, last_name, phone_number, email),
+    )
     connection.commit()
     contact_id = cursor.lastrowid
     connection.close()
@@ -50,11 +57,14 @@ def add_contact_to_db(first_name, last_name, phone_number, email):
 def update_contact_in_db(contact_id, first_name, last_name, phone_number, email):
     connection = sqlite3.connect("contacts.db")
     cursor = connection.cursor()
-    cursor.execute("""
+    cursor.execute(
+        """
         UPDATE contacts
         SET first_name = ?, last_name = ?, phone_number = ?, email = ?
         WHERE id = ?
-    """, (first_name, last_name, phone_number, email, contact_id))
+    """,
+        (first_name, last_name, phone_number, email, contact_id),
+    )
     connection.commit()
     connection.close()
 

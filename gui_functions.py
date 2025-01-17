@@ -7,17 +7,24 @@ def refresh_contacts(tree, contact_list):
     tree.delete(*tree.get_children())
     current = contact_list.head
     while current:
-        tree.insert("", "end", iid=current.contact_id, values=(
-            current.contact_id,
-            current.first_name,
-            current.last_name,
-            current.phone_number,
-            current.email
-        ))
+        tree.insert(
+            "",
+            "end",
+            iid=current.contact_id,
+            values=(
+                current.contact_id,
+                current.first_name,
+                current.last_name,
+                current.phone_number,
+                current.email,
+            ),
+        )
         current = current.next
 
 
-def add_contact(add_window, contact_list, tree, first_name, last_name, phone_number, email):
+def add_contact(
+    add_window, contact_list, tree, first_name, last_name, phone_number, email
+):
     if not first_name or not last_name or not phone_number:
         messagebox.showerror("Błąd", "Wszystkie pola oprócz email są wymagane.")
         return
@@ -46,4 +53,3 @@ def delete_contact(contact_list, tree, contact_id):
             messagebox.showinfo("Sukces", "Kontakt został usunięty.")
             return
         current = current.next
-

@@ -22,12 +22,34 @@ def main():
     frame.pack(pady=10)
 
     ## Add sorting function on pressing specific heading
-    tree = ttk.Treeview(frame, columns=("ID", "Imię", "Nazwisko", "Telefon", "Email"), show="headings")
-    tree.heading("ID", text="ID", command=lambda: sort_contacts_by_column("contact_id", contact_list))
-    tree.heading("Imię", text="Imię", command=lambda: sort_contacts_by_column("first_name", contact_list))  # Sort by first_name (x[1]))
-    tree.heading("Nazwisko", text="Nazwisko", command=lambda: sort_contacts_by_column("last_name", contact_list))
-    tree.heading("Telefon", text="Telefon", command=lambda: sort_contacts_by_column("phone_number", contact_list))
-    tree.heading("Email", text="Email", command=lambda: sort_contacts_by_column("email", contact_list))
+    tree = ttk.Treeview(
+        frame, columns=("ID", "Imię", "Nazwisko", "Telefon", "Email"), show="headings"
+    )
+    tree.heading(
+        "ID",
+        text="ID",
+        command=lambda: sort_contacts_by_column("contact_id", contact_list),
+    )
+    tree.heading(
+        "Imię",
+        text="Imię",
+        command=lambda: sort_contacts_by_column("first_name", contact_list),
+    )  # Sort by first_name (x[1]))
+    tree.heading(
+        "Nazwisko",
+        text="Nazwisko",
+        command=lambda: sort_contacts_by_column("last_name", contact_list),
+    )
+    tree.heading(
+        "Telefon",
+        text="Telefon",
+        command=lambda: sort_contacts_by_column("phone_number", contact_list),
+    )
+    tree.heading(
+        "Email",
+        text="Email",
+        command=lambda: sort_contacts_by_column("email", contact_list),
+    )
     tree.pack(side=tk.LEFT)
 
     scrollbar = ttk.Scrollbar(frame, orient=tk.VERTICAL, command=tree.yview)
@@ -56,9 +78,19 @@ def main():
         entry_email = tk.Entry(add_window)
         entry_email.grid(row=3, column=1)
 
-        tk.Button(add_window, text="Zapisz", command=lambda: add_contact(
-            add_window, contact_list, tree, entry_first_name.get(), entry_last_name.get(),
-            entry_phone.get(), entry_email.get())).grid(row=4, column=0, columnspan=2)
+        tk.Button(
+            add_window,
+            text="Zapisz",
+            command=lambda: add_contact(
+                add_window,
+                contact_list,
+                tree,
+                entry_first_name.get(),
+                entry_last_name.get(),
+                entry_phone.get(),
+                entry_email.get(),
+            ),
+        ).grid(row=4, column=0, columnspan=2)
 
     # Logic for editing selected contact
     # TODO: Move to separate module
@@ -90,7 +122,9 @@ def main():
                 return
 
             # Update in DB
-            update_contact_in_db(contact_id, new_first_name, new_last_name, new_phone_number, new_email)
+            update_contact_in_db(
+                contact_id, new_first_name, new_last_name, new_phone_number, new_email
+            )
 
             # Update in the list
             current.first_name = new_first_name
@@ -126,7 +160,9 @@ def main():
         entry_email.grid(row=3, column=1)
         entry_email.insert(0, current.email)
 
-        tk.Button(edit_window, text="Zapisz", command=save_edited_contact).grid(row=4, column=0, columnspan=2)
+        tk.Button(edit_window, text="Zapisz", command=save_edited_contact).grid(
+            row=4, column=0, columnspan=2
+        )
 
     def search_contacts():
         query = entry_search.get().lower()
@@ -138,22 +174,31 @@ def main():
         tree.delete(*tree.get_children())  # Clear whole table
         current = contact_list.head
         while current:
-            if (query in current.first_name.lower() or
-                    query in current.last_name.lower() or
-                    query in current.phone_number.lower() or
-                    (current.email and query in current.email.lower())):
+            if (
+                query in current.first_name.lower()
+                or query in current.last_name.lower()
+                or query in current.phone_number.lower()
+                or (current.email and query in current.email.lower())
+            ):
                 # Add contacts that match for specific search
-                tree.insert("", "end", iid=current.contact_id, values=(
-                    current.contact_id,
-                    current.first_name,
-                    current.last_name,
-                    current.phone_number,
-                    current.email
-                ))
+                tree.insert(
+                    "",
+                    "end",
+                    iid=current.contact_id,
+                    values=(
+                        current.contact_id,
+                        current.first_name,
+                        current.last_name,
+                        current.phone_number,
+                        current.email,
+                    ),
+                )
             current = current.next
 
         if not tree.get_children():
-            messagebox.showinfo("Informacja", "Nie znaleziono kontaktów pasujących do zapytania.")
+            messagebox.showinfo(
+                "Informacja", "Nie znaleziono kontaktów pasujących do zapytania."
+            )
 
     def reset_search():
         entry_search.delete(0, tk.END)  # Clear search field
@@ -178,20 +223,29 @@ def main():
     entry_search = tk.Entry(search_frame, width=30)
     entry_search.grid(row=0, column=1, padx=5)
 
-    tk.Button(search_frame, text="Wyszukaj", command=search_contacts).grid(row=0, column=2, padx=5)
-    tk.Button(search_frame, text="Resetuj", command=reset_search).grid(row=0, column=3, padx=5)
+    tk.Button(search_frame, text="Wyszukaj", command=search_contacts).grid(
+        row=0, column=2, padx=5
+    )
+    tk.Button(search_frame, text="Resetuj", command=reset_search).grid(
+        row=0, column=3, padx=5
+    )
 
     # Buttons for managing contacts
     button_frame = tk.Frame(root)
     button_frame.pack(pady=10)
 
-    tk.Button(button_frame, text="Dodaj kontakt", command=add_contact_window).grid(row=0, column=0, padx=5)
-    tk.Button(button_frame, text="Usuń kontakt", command=delete_selected_contact).grid(row=0, column=1, padx=5)
-    tk.Button(button_frame, text="Edytuj kontakt", command=edit_selected_contact).grid(row=0, column=2, padx=5)
+    tk.Button(button_frame, text="Dodaj kontakt", command=add_contact_window).grid(
+        row=0, column=0, padx=5
+    )
+    tk.Button(button_frame, text="Usuń kontakt", command=delete_selected_contact).grid(
+        row=0, column=1, padx=5
+    )
+    tk.Button(button_frame, text="Edytuj kontakt", command=edit_selected_contact).grid(
+        row=0, column=2, padx=5
+    )
 
     refresh_contacts(tree, contact_list)
     root.mainloop()
-
 
 
 if __name__ == "__main__":
