@@ -47,3 +47,18 @@ class DoublyLinkedList:
             current = nodes[i]
         self.tail = current
         self.tail.next = None
+
+class UndoStack:
+    def __init__(self):
+        self.stack = []
+
+    def push(self, action, data):
+        self.stack.append((action, data))
+
+    def pop(self):
+        if self.is_empty():
+            return None
+        return self.stack.pop()
+
+    def is_empty(self):
+        return len(self.stack) == 0

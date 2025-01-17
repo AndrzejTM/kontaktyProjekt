@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 from database import create_database, load_contacts_to_list, update_contact_in_db
-from gui_functions import refresh_contacts, add_contact, delete_contact
+from gui_functions import refresh_contacts, add_contact, delete_contact, undo_last_action
 
 
 ## TODO: Check if Bartek can push new changes
@@ -22,7 +22,6 @@ def main():
     frame = tk.Frame(root)
     frame.pack(pady=10)
 
-    ## Add sorting function on pressing specific heading
     tree = ttk.Treeview(
         frame, columns=("ID", "Imię", "Nazwisko", "Telefon", "Email"), show="headings"
     )
@@ -35,7 +34,7 @@ def main():
         "Imię",
         text="Imię",
         command=lambda: sort_contacts_by_column("first_name", contact_list),
-    )  # Sort by first_name (x[1]))
+    )
     tree.heading(
         "Nazwisko",
         text="Nazwisko",
@@ -243,6 +242,9 @@ def main():
     )
     tk.Button(button_frame, text="Edytuj kontakt", command=edit_selected_contact).grid(
         row=0, column=2, padx=5
+    )
+    tk.Button(button_frame, text="Cofnij", command=lambda: undo_last_action(contact_list, tree)).grid(
+        row=0, column=3, padx=5
     )
 
     refresh_contacts(tree, contact_list)
