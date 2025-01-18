@@ -48,7 +48,8 @@ class DoublyLinkedList:
         self.tail = current
         self.tail.next = None
 
-class UndoStack:
+
+class ChangesStack:
     def __init__(self):
         self.stack = []
 
