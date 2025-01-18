@@ -1,19 +1,19 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 from database import create_database, load_contacts_to_list, update_contact_in_db
-from gui_functions import refresh_contacts, add_contact, delete_contact
+from gui_functions import refresh_contacts, add_contact, delete_contact, undo_last_action, redo_last_action
 
 
-## TODO: Check if Bartek can push new changes
 def main():
+    default_window_height_px = 200
+    default_window_width_px = 200
     create_database()
     contact_list = load_contacts_to_list()
 
-    def sort_contacts_by_column(column, contact_list):
+    def sort_contacts_by_column(column, contacts):
         # Sort contacts by the chosen column (first_name or last_name)
-        contact_list.sort(column)
-        # contact_list.sort(column)
-        refresh_contacts(tree, contact_list)
+        contacts.sort(column)
+        refresh_contacts(tree, contacts)
 
     root = tk.Tk()
     root.title("Menadżer kontaktów")
@@ -22,7 +22,6 @@ def main():
     frame = tk.Frame(root)
     frame.pack(pady=10)
 
-    ## Add sorting function on pressing specific heading
     tree = ttk.Treeview(
         frame, columns=("ID", "Imię", "Nazwisko", "Telefon", "Email"), show="headings"
     )
@@ -35,7 +34,7 @@ def main():
         "Imię",
         text="Imię",
         command=lambda: sort_contacts_by_column("first_name", contact_list),
-    )  # Sort by first_name (x[1]))
+    )
     tree.heading(
         "Nazwisko",
         text="Nazwisko",
@@ -58,10 +57,10 @@ def main():
     scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
     # Window for adding new contact
-    # TODO: Set default window size
     def add_contact_window():
         add_window = tk.Toplevel(root)
         add_window.title("Dodaj kontakt")
+        add_window.minsize(default_window_width_px, default_window_height_px)
 
         tk.Label(add_window, text="Imię").grid(row=0, column=0)
         entry_first_name = tk.Entry(add_window)
@@ -243,6 +242,12 @@ def main():
     )
     tk.Button(button_frame, text="Edytuj kontakt", command=edit_selected_contact).grid(
         row=0, column=2, padx=5
+    )
+    tk.Button(button_frame, text="Cofnij zmianę", command=lambda: undo_last_action(contact_list, tree)).grid(
+        row=0, column=3, padx=5
+    )
+    tk.Button(button_frame, text="Przywróć zmianę", command=lambda: redo_last_action(contact_list, tree)).grid(
+        row=0, column=4, padx=5
     )
 
     refresh_contacts(tree, contact_list)
