@@ -19,6 +19,7 @@ def create_database():
     connection.commit()
     connection.close()
 
+
 def load_contacts_to_list():
     connection = sqlite3.connect("contacts.db")
     cursor = connection.cursor()
@@ -36,6 +37,7 @@ def load_contacts_to_list():
 
     return contact_list
 
+
 def add_contact_to_db(first_name, last_name, phone_number, email):
     connection = sqlite3.connect("contacts.db")
     cursor = connection.cursor()
@@ -51,6 +53,7 @@ def add_contact_to_db(first_name, last_name, phone_number, email):
     connection.close()
     return contact_id
 
+
 def update_contact_in_db(contact_id, first_name, last_name, phone_number, email):
     connection = sqlite3.connect("contacts.db")
     cursor = connection.cursor()
@@ -64,6 +67,7 @@ def update_contact_in_db(contact_id, first_name, last_name, phone_number, email)
     )
     connection.commit()
     connection.close()
+
 
 def delete_contact_from_db(contact_id):
     connection = sqlite3.connect("contacts.db")

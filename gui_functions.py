@@ -1,8 +1,10 @@
 from tkinter import messagebox
 from database import add_contact_to_db, delete_contact_from_db
-from structures import UndoStack, ContactNode
+from structures import ChangesStack, ContactNode
 
-undo_stack = UndoStack()
+undo_stack = ChangesStack()
+redo_stack = ChangesStack()
+
 
 def refresh_contacts(tree, contact_list):
     tree.delete(*tree.get_children())
@@ -24,7 +26,7 @@ def refresh_contacts(tree, contact_list):
 
 
 def add_contact(
-    add_window, contact_list, tree, first_name, last_name, phone_number, email
+        add_window, contact_list, tree, first_name, last_name, phone_number, email
 ):
     if not first_name or not last_name or not phone_number:
         messagebox.showerror("Błąd", "Wszystkie pola oprócz email są wymagane.")
@@ -57,6 +59,7 @@ def delete_contact(contact_list, tree, contact_id):
             return
         current = current.next
 
+
 def undo_last_action(contact_list, tree):
     if undo_stack.is_empty():
         messagebox.showwarning("Uwaga", "Nie ma nic do cofnięcia.")
@@ -66,9 +69,29 @@ def undo_last_action(contact_list, tree):
     if action == "delete":
         delete_contact_from_db(data.contact_id)
         delete_contact(contact_list, tree, data.contact_id)
+        redo_stack.push("add", data)
     elif action == "add":
         data.contact_id = add_contact_to_db(data.first_name, data.last_name, data.phone_number, data.email)
+        redo_stack.push("delete", data)
         contact_list.append((data.contact_id, data.first_name, data.last_name, data.phone_number, data.email))
         messagebox.showinfo("Sukces", "Kontakt dodany.")
     refresh_contacts(tree, contact_list)
     messagebox.showinfo("Sukces", "Ostatnia akcja została cofnięta.")
+
+
+def redo_last_action(contact_list, tree):
+    if redo_stack.is_empty():
+        messagebox.showwarning("Uwaga", "Nie ma nic do przywrócenia.")
+        return
+
+    action, data = redo_stack.pop()
+    if action == "delete":
+        delete_contact_from_db(data.contact_id)
+        delete_contact(contact_list, tree, data.contact_id)
+    elif action == "add":
+        data.contact_id = add_contact_to_db(data.first_name, data.last_name, data.phone_number, data.email)
+        contact_list.append((data.contact_id, data.first_name, data.last_name, data.phone_number, data.email))
+        undo_stack.push("delete", data)
+        messagebox.showinfo("Sukces", "Kontakt przywrócony.")
+    refresh_contacts(tree, contact_list)
+    messagebox.showinfo("Sukces", "Ostatnia akcja została przywrócona.")
