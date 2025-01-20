@@ -1,17 +1,18 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 from database import create_database, load_contacts_to_list, update_contact_in_db
-from gui_functions import refresh_contacts, add_contact, delete_contact, undo_last_action
+from gui_functions import refresh_contacts, add_contact, delete_contact, undo_last_action, redo_last_action
 
 
 def main():
+    default_window_height_px = 200
+    default_window_width_px = 200
     create_database()
     contact_list = load_contacts_to_list()
 
     def sort_contacts_by_column(column, contacts):
         # Sort contacts by the chosen column (first_name or last_name)
         contacts.sort(column)
-        # contact_list.sort(column)
         refresh_contacts(tree, contacts)
 
     root = tk.Tk()
@@ -56,10 +57,10 @@ def main():
     scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
     # Window for adding new contact
-    # TODO: Set default window size
     def add_contact_window():
         add_window = tk.Toplevel(root)
         add_window.title("Dodaj kontakt")
+        add_window.minsize(default_window_width_px, default_window_height_px)
 
         tk.Label(add_window, text="Imię").grid(row=0, column=0)
         entry_first_name = tk.Entry(add_window)
@@ -242,8 +243,11 @@ def main():
     tk.Button(button_frame, text="Edytuj kontakt", command=edit_selected_contact).grid(
         row=0, column=2, padx=5
     )
-    tk.Button(button_frame, text="Cofnij", command=lambda: undo_last_action(contact_list, tree)).grid(
+    tk.Button(button_frame, text="Cofnij zmianę", command=lambda: undo_last_action(contact_list, tree)).grid(
         row=0, column=3, padx=5
+    )
+    tk.Button(button_frame, text="Przywróć zmianę", command=lambda: redo_last_action(contact_list, tree)).grid(
+        row=0, column=4, padx=5
     )
 
     refresh_contacts(tree, contact_list)

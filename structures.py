@@ -23,6 +23,16 @@ class DoublyLinkedList:
             self.tail.next = new_node
             self.tail = new_node
 
+    def quicksort(self, nodes, key):
+        if len(nodes) <= 1:
+            return nodes
+
+        pivot = nodes[0]
+        less = [node for node in nodes[1:] if getattr(node, key) <= getattr(pivot, key)]
+        greater = [node for node in nodes[1:] if getattr(node, key) > getattr(pivot, key)]
+
+        return self.quicksort(less, key) + [pivot] + self.quicksort(greater, key)
+
     def sort(self, key):
         if not self.head or not self.head.next:
             return  # No need to sort if the list is empty or has one element
@@ -35,7 +45,7 @@ class DoublyLinkedList:
             current = current.next
 
         # Sort nodes based on the specified key
-        nodes.sort(key=lambda node: getattr(node, key))
+        nodes = self.quicksort(nodes, key)
 
         # Rebuild the doubly linked list from the sorted nodes
         self.head = nodes[0]
@@ -48,7 +58,8 @@ class DoublyLinkedList:
         self.tail = current
         self.tail.next = None
 
-class UndoStack:
+
+class ChangesStack:
     def __init__(self):
         self.stack = []
 
