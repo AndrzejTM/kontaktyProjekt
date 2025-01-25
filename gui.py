@@ -170,34 +170,34 @@ def main():
             messagebox.showwarning("Uwaga", "Pole wyszukiwania jest puste.")
             return
 
-        ## TODO: Check if that block of code is search algorithm
-        tree.delete(*tree.get_children())  # Clear whole table
+        tree.delete(*tree.get_children())
+
+        contacts = []
         current = contact_list.head
         while current:
-            if (
-                query in current.first_name.lower()
-                or query in current.last_name.lower()
-                or query in current.phone_number.lower()
-                or (current.email and query in current.email.lower())
-            ):
-                # Add contacts that match for specific search
-                tree.insert(
-                    "",
-                    "end",
-                    iid=current.contact_id,
-                    values=(
-                        current.contact_id,
-                        current.first_name,
-                        current.last_name,
-                        current.phone_number,
-                        current.email,
-                    ),
-                )
+            contact_data = f"{current.first_name} {current.last_name} {current.phone_number} {current.email or ''}".lower()
+            if query in contact_data:  # Filtruj kontakty na podstawie zapytania
+                contacts.append(current)
             current = current.next
 
-        if not tree.get_children():
+        if not contacts:
             messagebox.showinfo(
                 "Informacja", "Nie znaleziono kontaktów pasujących do zapytania."
+            )
+            return
+
+        for contact in contacts:
+            tree.insert(
+                "",
+                "end",
+                iid=contact.contact_id,
+                values=(
+                    contact.contact_id,
+                    contact.first_name,
+                    contact.last_name,
+                    contact.phone_number,
+                    contact.email,
+                ),
             )
 
     def reset_search():
