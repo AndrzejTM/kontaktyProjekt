@@ -214,8 +214,41 @@ def main():
         contact_id = int(selected_item)
         delete_contact(contact_list, tree, contact_id)
 
+
+    # Dropdown for filtering contacts
+    def create_filter_menu(root, tree, contact_list):
+        letters = [chr(i) for i in range(65, 91)]  # A-Z
+        selected_letter = tk.StringVar()
+        selected_letter.set("Wybierz literę")
+        filter_menu = tk.OptionMenu(
+            root,
+            selected_letter,
+            *letters,
+            command=lambda letter: filter_contacts_by_letter(letter, tree, contact_list),
+        )
+        filter_menu.pack(pady=5)
+
+
+    def filter_contacts_by_letter(letter, tree, contact_list):
+        tree.delete(*tree.get_children())
+        current = contact_list.head
+        while current:
+            if current.last_name.lower().startswith(letter.lower()):
+                tree.insert(
+                    "",
+                    "end",
+                    iid=current.contact_id,
+                    values=(
+                        current.contact_id,
+                        current.first_name,
+                        current.last_name,
+                        current.phone_number,
+                        current.email,
+                    ),
+                )
+            current = current.next
+
     # Search field and search + reset button
-    # TODO: Move to separate module
     search_frame = tk.Frame(root)
     search_frame.pack(pady=5)
 
@@ -250,6 +283,7 @@ def main():
         row=0, column=4, padx=5
     )
 
+    create_filter_menu(root, tree, contact_list)
     refresh_contacts(tree, contact_list)
     root.mainloop()
 
