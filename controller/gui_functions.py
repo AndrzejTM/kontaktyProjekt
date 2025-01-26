@@ -1,9 +1,16 @@
+import tkinter as tk
 from tkinter import messagebox
-from database import add_contact_to_db, delete_contact_from_db
-from structures import ChangesStack, ContactNode
+from model.db.database import add_contact_to_db, delete_contact_from_db
+from model.structures import ChangesStack, ContactNode
 
 undo_stack = ChangesStack()
 redo_stack = ChangesStack()
+
+
+def sort_contacts_by_column(tree, column, contacts):
+    # Sort contacts by the chosen column (first_name or last_name)
+    contacts.sort(column)
+    refresh_contacts(tree, contacts)
 
 
 def refresh_contacts(tree, contact_list):
@@ -122,3 +129,83 @@ def redo_last_action(contact_list, tree):
         messagebox.showinfo("Sukces", "Kontakt przywrócony.")
     refresh_contacts(tree, contact_list)
     messagebox.showinfo("Sukces", "Ostatnia akcja została przywrócona.")
+
+
+def search_contacts(tree, entry_search, contact_list):
+    query = entry_search.get().lower()
+    if not query:
+        messagebox.showwarning("Uwaga", "Pole wyszukiwania jest puste.")
+        return
+
+    tree.delete(*tree.get_children())
+
+    contacts = []
+    current = contact_list.head
+    while current:
+        contact_data = (
+            f"{current.first_name} "
+            f"{current.last_name} "
+            f"{current.phone_number} "
+            f"{current.email or ''}".lower()
+        )
+        if query in contact_data:  # Filtruj kontakty na podstawie zapytania
+            contacts.append(current)
+        current = current.next
+
+    if not contacts:
+        messagebox.showinfo(
+            "Informacja",
+            "Nie znaleziono kontaktów pasujących do zapytania.",
+        )
+        return
+
+    for contact in contacts:
+        tree.insert(
+            "",
+            "end",
+            iid=contact.contact_id,
+            values=(
+                contact.contact_id,
+                contact.first_name,
+                contact.last_name,
+                contact.phone_number,
+                contact.email,
+            ),
+        )
+
+
+def filter_contacts_by_letter(letter, tree, contact_list):
+    tree.delete(*tree.get_children())
+    current = contact_list.head
+    while current:
+        if current.last_name.lower().startswith(letter.lower()):
+            tree.insert(
+                "",
+                "end",
+                iid=current.contact_id,
+                values=(
+                    current.contact_id,
+                    current.first_name,
+                    current.last_name,
+                    current.phone_number,
+                    current.email,
+                ),
+            )
+        current = current.next
+
+    # Logic for deleting selected contact
+
+
+def delete_selected_contact(tree, contact_list):
+    selected_item = tree.focus()
+    if not selected_item:
+        messagebox.showerror("Błąd", "Nie wybrano kontaktu do usunięcia.")
+        return
+
+    contact_id = int(selected_item)
+    delete_contact(contact_list, tree, contact_id)
+
+
+def reset_search(tree, entry_search, contact_list):
+    entry_search.delete(0, tk.END)  # Clear search field
+    refresh_contacts(tree, contact_list)  # Reset whole list

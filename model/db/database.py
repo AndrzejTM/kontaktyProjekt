@@ -1,9 +1,9 @@
 import sqlite3
-from structures import DoublyLinkedList
+from model.structures import DoublyLinkedList
 
 
 def create_database():
-    connection = sqlite3.connect("contacts.db")
+    connection = sqlite3.connect("./model/db/contacts.db")
     cursor = connection.cursor()
     cursor.execute(
         """
@@ -21,7 +21,7 @@ def create_database():
 
 
 def load_contacts_to_list():
-    connection = sqlite3.connect("contacts.db")
+    connection = sqlite3.connect("./model/db/contacts.db")
     cursor = connection.cursor()
     cursor.execute(
         """
@@ -39,7 +39,7 @@ def load_contacts_to_list():
 
 
 def add_contact_to_db(first_name, last_name, phone_number, email):
-    connection = sqlite3.connect("contacts.db")
+    connection = sqlite3.connect("./model/db/contacts.db")
     cursor = connection.cursor()
     cursor.execute(
         """
@@ -57,7 +57,7 @@ def add_contact_to_db(first_name, last_name, phone_number, email):
 def update_contact_in_db(
     contact_id, first_name, last_name, phone_number, email
 ):
-    connection = sqlite3.connect("contacts.db")
+    connection = sqlite3.connect("./model/db/contacts.db")
     cursor = connection.cursor()
     cursor.execute(
         """
@@ -73,7 +73,7 @@ def update_contact_in_db(
 
 
 def delete_contact_from_db(contact_id):
-    connection = sqlite3.connect("contacts.db")
+    connection = sqlite3.connect("./model/db/contacts.db")
     cursor = connection.cursor()
     cursor.execute("DELETE FROM contacts WHERE id = ?", (contact_id,))
     connection.commit()
