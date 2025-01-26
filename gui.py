@@ -1,7 +1,17 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
-from database import create_database, load_contacts_to_list, update_contact_in_db
-from gui_functions import refresh_contacts, add_contact, delete_contact, undo_last_action, redo_last_action
+from database import (
+    create_database,
+    load_contacts_to_list,
+    update_contact_in_db,
+)
+from gui_functions import (
+    refresh_contacts,
+    add_contact,
+    delete_contact,
+    undo_last_action,
+    redo_last_action,
+)
 
 
 def main():
@@ -23,7 +33,9 @@ def main():
     frame.pack(pady=10)
 
     tree = ttk.Treeview(
-        frame, columns=("ID", "Imię", "Nazwisko", "Telefon", "Email"), show="headings"
+        frame,
+        columns=("ID", "Imię", "Nazwisko", "Telefon", "Email"),
+        show="headings",
     )
     tree.heading(
         "ID",
@@ -118,12 +130,18 @@ def main():
             new_email = entry_email.get()
 
             if not new_first_name or not new_last_name or not new_phone_number:
-                messagebox.showerror("Błąd", "Wszystkie pola oprócz email są wymagane.")
+                messagebox.showerror(
+                    "Błąd", "Wszystkie pola oprócz email są wymagane."
+                )
                 return
 
             # Update in DB
             update_contact_in_db(
-                contact_id, new_first_name, new_last_name, new_phone_number, new_email
+                contact_id,
+                new_first_name,
+                new_last_name,
+                new_phone_number,
+                new_email,
             )
 
             # Update in the list
@@ -160,8 +178,10 @@ def main():
         entry_email.grid(row=3, column=1)
         entry_email.insert(0, current.email)
 
-        tk.Button(edit_window, text="Zapisz", command=save_edited_contact).grid(
-            row=4, column=0, columnspan=2
+        (
+            tk.Button(
+                edit_window, text="Zapisz", command=save_edited_contact
+            ).grid(row=4, column=0, columnspan=2)
         )
 
     def search_contacts():
@@ -175,14 +195,22 @@ def main():
         contacts = []
         current = contact_list.head
         while current:
-            contact_data = f"{current.first_name} {current.last_name} {current.phone_number} {current.email or ''}".lower()
-            if query in contact_data:  # Filtruj kontakty na podstawie zapytania
+            contact_data = (
+                f"{current.first_name} "
+                f"{current.last_name} "
+                f"{current.phone_number} "
+                f"{current.email or ''}".lower()
+            )
+            if (
+                query in contact_data
+            ):  # Filtruj kontakty na podstawie zapytania
                 contacts.append(current)
             current = current.next
 
         if not contacts:
             messagebox.showinfo(
-                "Informacja", "Nie znaleziono kontaktów pasujących do zapytania."
+                "Informacja",
+                "Nie znaleziono kontaktów pasujących do zapytania.",
             )
             return
 
@@ -214,7 +242,6 @@ def main():
         contact_id = int(selected_item)
         delete_contact(contact_list, tree, contact_id)
 
-
     # Dropdown for filtering contacts
     def create_filter_menu(root, tree, contact_list):
         letters = [chr(i) for i in range(65, 91)]  # A-Z
@@ -224,10 +251,11 @@ def main():
             root,
             selected_letter,
             *letters,
-            command=lambda letter: filter_contacts_by_letter(letter, tree, contact_list),
+            command=lambda letter: filter_contacts_by_letter(
+                letter, tree, contact_list
+            ),
         )
         filter_menu.pack(pady=5)
-
 
     def filter_contacts_by_letter(letter, tree, contact_list):
         tree.delete(*tree.get_children())
@@ -267,21 +295,25 @@ def main():
     button_frame = tk.Frame(root)
     button_frame.pack(pady=10)
 
-    tk.Button(button_frame, text="Dodaj kontakt", command=add_contact_window).grid(
-        row=0, column=0, padx=5
-    )
-    tk.Button(button_frame, text="Usuń kontakt", command=delete_selected_contact).grid(
-        row=0, column=1, padx=5
-    )
-    tk.Button(button_frame, text="Edytuj kontakt", command=edit_selected_contact).grid(
-        row=0, column=2, padx=5
-    )
-    tk.Button(button_frame, text="Cofnij zmianę", command=lambda: undo_last_action(contact_list, tree)).grid(
-        row=0, column=3, padx=5
-    )
-    tk.Button(button_frame, text="Przywróć zmianę", command=lambda: redo_last_action(contact_list, tree)).grid(
-        row=0, column=4, padx=5
-    )
+    tk.Button(
+        button_frame, text="Dodaj kontakt", command=add_contact_window
+    ).grid(row=0, column=0, padx=5)
+    tk.Button(
+        button_frame, text="Usuń kontakt", command=delete_selected_contact
+    ).grid(row=0, column=1, padx=5)
+    tk.Button(
+        button_frame, text="Edytuj kontakt", command=edit_selected_contact
+    ).grid(row=0, column=2, padx=5)
+    tk.Button(
+        button_frame,
+        text="Cofnij zmianę",
+        command=lambda: undo_last_action(contact_list, tree),
+    ).grid(row=0, column=3, padx=5)
+    tk.Button(
+        button_frame,
+        text="Przywróć zmianę",
+        command=lambda: redo_last_action(contact_list, tree),
+    ).grid(row=0, column=4, padx=5)
 
     create_filter_menu(root, tree, contact_list)
     refresh_contacts(tree, contact_list)

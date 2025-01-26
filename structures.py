@@ -28,10 +28,20 @@ class DoublyLinkedList:
             return nodes
 
         pivot = nodes[0]
-        less = [node for node in nodes[1:] if getattr(node, key) <= getattr(pivot, key)]
-        greater = [node for node in nodes[1:] if getattr(node, key) > getattr(pivot, key)]
+        less = [
+            node
+            for node in nodes[1:]
+            if getattr(node, key) <= getattr(pivot, key)
+        ]
+        greater = [
+            node
+            for node in nodes[1:]
+            if getattr(node, key) > getattr(pivot, key)
+        ]
 
-        return self.quicksort(less, key) + [pivot] + self.quicksort(greater, key)
+        return (
+            self.quicksort(less, key) + [pivot] + self.quicksort(greater, key)
+        )
 
     def sort(self, key):
         if not self.head or not self.head.next:
