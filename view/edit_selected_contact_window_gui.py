@@ -9,7 +9,6 @@ from model.db.database import update_contact_in_db
 
 
 def edit_selected_contact(root, tree, contact_list):
-    print("EDIT CONTACT WINDOW")
     selected_item = tree.focus()
     if not selected_item:
         messagebox.showerror("Błąd", "Nie wybrano kontaktu do edycji.")

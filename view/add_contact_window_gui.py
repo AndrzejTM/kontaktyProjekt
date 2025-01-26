@@ -6,7 +6,6 @@ from controller.gui_functions import add_contact
 
 # Window for adding new contact
 def add_contact_window(root, tree, contact_list):
-    print("ADD_CONTACT_WINDOW")
     add_window = tk.Toplevel(root)
     add_window.title("Dodaj kontakt")
     add_window.minsize(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT)
